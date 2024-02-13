@@ -1,0 +1,40 @@
+﻿@model List<Empleado>
+
+<h1>Buscador empleados</h1>
+
+<form method="post">
+    <label>Oficio</label>
+    <input type="text" name="oficio" class="form-control" required />
+    <label>Salario</label>
+    <input type="number" name="salario" class="form-control" required/>
+    <button class="btn btn-info">
+        Buscar empleados
+    </button>
+</form>
+<h2 style="color:blue">
+    @ViewData["MENSAJE"]
+</h2>
+@if (Model != null)
+{
+    <table class="table table-warning">
+        <thead>
+            <tr>
+                <th>Apellido</th>
+                <th>Oficio</th>
+                <th>Salario</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Empleado emp in Model)
+            {
+                <tr>
+                    <td>@emp.Apellido</td>
+                    <td>@emp.Oficio</td>
+                    <td>@emp.Salario</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
