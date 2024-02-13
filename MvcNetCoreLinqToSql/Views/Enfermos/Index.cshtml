@@ -1,0 +1,36 @@
+﻿@model List<Enfermo>
+
+<h1 style="color:blue">Enfermos</h1>
+
+<table class="table table-bordered table-danger">
+    <thead>
+        <tr>
+            <th>Inscripción</th>
+            <th>Apellido</th>
+            <th>Dirección</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Enfermo enfermo in Model)
+        {
+            <tr>
+                <td>@enfermo.Inscripcion</td>
+                <td>@enfermo.Apellido</td>
+                <td>@enfermo.Direccion</td>
+                <td>
+                    <a asp-controller="Enfermos" asp-action="Details"
+                        asp-route-inscripcion="@enfermo.Inscripcion"
+                        class="btn btn-outline-dark">
+                        Details
+                    </a>
+                    <a asp-controller="Enfermos" asp-action="Delete"
+                        asp-route-inscripcion="@enfermo.Inscripcion"
+                        class="btn btn-danger">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,6 +1,8 @@
 ﻿using MvcNetCoreLinqToSql.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MvcNetCoreLinqToSql.Repositories
 {
@@ -17,6 +19,53 @@ namespace MvcNetCoreLinqToSql.Repositories
             this.tablaEmpleados = new DataTable();
             //TRAEMOS LOS DATOS
             adEmp.Fill(tablaEmpleados);
+        }
+
+        //METODO PARA FILTRAR EMPLEADOS POR SU OFICIO
+        public ResumenEmpleados GetEmpleadosOficio(string oficio)
+        {
+            var consulta = from datos in this.tablaEmpleados.AsEnumerable()
+                           where datos.Field<string>("OFICIO") == oficio
+                           select datos;
+            //ME GUSTARIA QUE LOS DATOS ESTEN ORDENADOS POR SALARIO
+            consulta = consulta.OrderBy(x => x.Field<int>("SALARIO"));
+            int personas = consulta.Count();
+            int maximo = consulta.Max(z => z.Field<int>("SALARIO"));
+            double media = consulta.Average(x => x.Field<int>("SALARIO"));
+            List<Empleado> empleados = new List<Empleado>();
+            foreach (var row in consulta)
+            {
+                Empleado emp = new Empleado
+                {
+                    IdEmpleado = row.Field<int>("EMP_NO"),
+                    Apellido = row.Field<string>("APELLIDO"),
+                    Oficio = row.Field<string>("OFICIO"),
+                    Salario = row.Field<int>("SALARIO"),
+                    IdDepartamento = row.Field<int>("DEPT_NO")
+                };
+                empleados.Add(emp);
+            }
+            ResumenEmpleados resumen = new ResumenEmpleados
+            {
+                Personas = personas, 
+                MaximoSalario = maximo, 
+                MediaSalarial = media, 
+                Empleados = empleados
+            };
+            return resumen;
+        }
+
+        //METODO PARA RECUPERAR LOS OFICIOS DE LOS EMPLEADOS
+        public List<string> GetOficios()
+        {
+            var consulta = (from datos in this.tablaEmpleados.AsEnumerable()
+                           select datos.Field<string>("OFICIO")).Distinct();
+            List<string> oficios = new List<string>();
+            foreach (string ofi in consulta)
+            {
+                oficios.Add(ofi);
+            }
+            return oficios;
         }
 
         //METODO PARA RECUPERAR TODOS LOS EMPLEADOS

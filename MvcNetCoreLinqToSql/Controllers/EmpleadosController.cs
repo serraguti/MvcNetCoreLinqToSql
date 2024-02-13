@@ -13,6 +13,20 @@ namespace MvcNetCoreLinqToSql.Controllers
             this.repo = new RepositoryEmpleados();
         }
 
+        public IActionResult DatosEmpleados()
+        {
+            ViewData["OFICIOS"] = this.repo.GetOficios();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult DatosEmpleados(string oficio)
+        {
+            ViewData["OFICIOS"] = this.repo.GetOficios();
+            ResumenEmpleados model = this.repo.GetEmpleadosOficio(oficio);
+            return View(model);
+        }
+
         public IActionResult Index()
         {
             List<Empleado> empleados = this.repo.GetEmpleados();
